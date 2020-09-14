@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription{% endblock %}
+
+{% block body %}
+<style>
+    #logup{
+        background-color:#E4F1F5;
+        min-height: calc(100vh - 56px);
+    }
+    #logup #registerform{
+        width:100%;
+        padding:15px;
+        background-color:white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, .1), 0 8px 16px rgba(0, 0, 0, .1);
+    }
+</style>
+<div id="logup">
+<div class="container pb-2" >
+    <h2 class="text-center">Créer un compte</h2>
+    <div class="row justify-content-center">
+        <div class="col-md-5 mt-4">
+            <div id="registerform">
+                {% for message in app.flashes('danger') %}
+                <div class="alert alert-danger">
+                    {{ message }}
+                </div>
+                {% endfor %}
+                {% for message in app.flashes('success') %}
+                    <div class="alert alert-success">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+                {{ form_start(form) }}
+                {{ form_rest(form) }}
+                <button type="submit" class="btn btn-primary btn-block">Envoyer</button>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}
