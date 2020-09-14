@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+{% block title %}Liste{% endblock %}
+{% block body %}
+
+<div id="listusers">
+<div class="container pb-2" >
+    <h2 class="text-center">Tous les utilisateurs</h2>
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Nom</th>
+                <th scope="col">Prénom</th>
+                <th scope="col">Email</th>
+                <th scope="col">Date de création</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for user in allusers %}
+                <tr>
+                <th scope="row">
+                    <a href="{{ path('oneuser',{'id':user.id}) }}">{{ user.id }}</a>
+                </th>
+                <td>{{ user.lastname }}</td>
+                <td>{{ user.firstname }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.created|date("m/d/Y h:i:s")  }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

@@ -18,6 +18,15 @@ security:
             anonymous: lazy
             provider: app_user_provider
 
+            form_login:
+                login_path: connexionpage
+                check_path: connexionpage
+                default_target_path: hom # Redirection lorsque l'on se connecte
+            logout:
+                path: app_connection_logout
+                target: hom
+
+            pattern: ^/
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#firewalls-authentication
 

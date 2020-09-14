@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div id="createsouscompte">
+<div class="container pb-2" >
+    <h2 class="text-center">Créer un sous-compte</h2>
+    <div class="row justify-content-center">
+        <div class="col-md-5 mt-4">
+            <div id="registerform">
+                {% for message in app.flashes('danger') %}
+                <div class="alert alert-danger">
+                    {{ message }}
+                </div>
+                {% endfor %}
+                {% for message in app.flashes('success') %}
+                    <div class="alert alert-success">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+                {{ form_start(form) }}
+                {{ form_rest(form) }}
+                <button type="submit" class="btn btn-primary btn-block">Envoyer</button>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

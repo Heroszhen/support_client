@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription{% endblock %}
+
+{% block body %}
+<style>
+    #login{
+        background-color:#E4F1F5;
+        min-height: calc(100vh - 56px);
+    }
+    #login #registerform{
+        width:100%;
+        padding:15px;
+        background-color:white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, .1), 0 8px 16px rgba(0, 0, 0, .1);
+    }
+</style>
+<div id="login">
+<div class="container pb-2" >
+    <h2 class="text-center">Se connecter</h2>
+    <div class="row justify-content-center">
+        <div class="col-md-5 mt-4">
+            <div id="registerform">
+                <form method="post">
+					<div class="form-group">
+						<label>Email</label>
+						<input type="text" name="_username" class="form-control"
+							value="{{ last_username }}">
+					</div>
+					<div class="form-group">
+						<label>Mot de passe</label>
+						<input type="password" name="_password" class="form-control">
+					</div>
+					<div class="">
+						<button type="submit" class="btn btn-primary">
+							Se connecter
+						</button>
+					</div>
+				</form>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}
