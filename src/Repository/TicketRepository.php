@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Ticket;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use App\Entity\Service;
 
 /**
  * @method Ticket|null find($id, $lockMode = null, $lockVersion = null)
@@ -18,6 +19,35 @@ class TicketRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Ticket::class);
     }
+
+
+    public function findByService(Service $service){
+        $qb = $this->createQueryBuilder('t');
+        $qb
+            ->innerJoin('t.services', 's')
+            ->where('s.id=:serviceid')
+            ->setParameter('serviceid', $service->getId())
+        ;
+        $query = $qb->getQuery();
+        return $query->getResult();
+    }
+
+    public function findByNotService(Service $service){
+        $tab = $this->findByService($service);
+        $tab2 = [];
+        foreach($tab as $one){
+            array_push($tab2,$one->getId());
+        }
+
+        $qb = $this->createQueryBuilder('t');
+        $qb
+            ->innerJoin('t.services', 's')
+            ->where($qb->expr()->notIn('t.id', $tab2))
+        ;
+        $query = $qb->getQuery();
+        return $query->getResult();
+    }
+
 
     // /**
     //  * @return Ticket[] Returns an array of Ticket objects

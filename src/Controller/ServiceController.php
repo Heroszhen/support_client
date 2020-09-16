@@ -12,7 +12,7 @@ use App\Form\TicketType;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use App\Entity\Message;
-
+use App\Form\MessageType;
 
 /**
  * Class ServiceController
@@ -80,7 +80,7 @@ class ServiceController extends AbstractController
 
     /**
      * @Route("/creer_ticket/{id}", name="createticket",defaults={"id":null})
-     * @Security("is_granted('ROLE_CUSTOMER') or is_granted('ROLE_CUSTOMER_ADMIN')")
+     * @Security("is_granted('ROLE_CUSTOMER') or is_granted('ROLE_CUSTOMER_ADMIN') or is_granted('ROLE_ADMIN')")
      */
     public function createOneTicket($id,Request $request){
         $em = $this->getDoctrine()->getManager();
@@ -150,8 +150,11 @@ class ServiceController extends AbstractController
         $session->set("nav","ft");
 
         $alltickets = $em->getRepository(Ticket::class)->findAll();
-
         $allservices = $em->getRepository(Service::class)->findBy([],["name"=>"asc"]);
+        
+        $ts = $em->getRepository(Ticket::class)->findByService($this->getUser()->getService());
+        $ts2 = $em->getRepository(Ticket::class)->findByNotService($this->getUser()->getService());
+        dump($ts,$ts2);
         return $this->render('service/adminlisttickets.html.twig', [
             "list" => $alltickets,
             "allservices" => $allservices
@@ -185,19 +188,26 @@ class ServiceController extends AbstractController
     public function sendMessageToTicket(Ticket $ticket, Request $request){
         $em = $this->getDoctrine()->getManager();
 
-        
-        $content = $request->request->get("content");
-        if($content != null && $content != ""){
-            $message = new Message();
-            $message->setContent($content);
-            $message->setAuthor($this->getUser());
-            $message->setTicket($ticket);
-            $message->setCreated(new \DateTime());
-            $em->persist($message);
-            $em->flush();
+
+        $message = new Message();
+        $form = $this->createForm(MessageType::class,$message);
+        $form->handleRequest($request);
+        if ($form->isSubmitted()) {
+            if($form->isValid()){
+                $message->setAuthor($this->getUser());
+                $message->setTicket($ticket);
+                $message->setCreated(new \DateTime());
+                $em->persist($message);
+                $em->flush();
+
+                $message = new Message();
+                $form = $this->createForm(MessageType::class,$message);
+            }
         }
+        
         return $this->render('service/messageticket.html.twig', [
-            "ticket" => $ticket
+            "ticket" => $ticket,
+            "form" => $form->createView()
         ]);
     }
 }

@@ -21,12 +21,10 @@
             {{ ticket.created|date('d/m/Y') }}
         </div>
         <div class="col-12 mt-5">
-            <form method="post" action="{{ path('messagetoticket',{'id':ticket.id}) }}">
-                <div class="form-group">
-                    <textarea class="form-control" id="content" name="content" rows="2" placeholder="message"></textarea>
-                </div>
+            {{ form_start(form) }}
+            {{ form_rest(form) }}
                 <button type="submit" class="btn btn-primary btn-block btn-sm">Envoyer</button>
-            </form>
+            {{ form_end(form) }}
         </div>
         <div class="col-12 mt-4">
             {% for one in ticket.messages|reverse %}
