@@ -9,6 +9,7 @@ use App\Form\LogupType;
 use App\Entity\User;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class ConnectionController extends AbstractController
 {
@@ -27,9 +28,9 @@ class ConnectionController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted()) {
             if($form->isValid()){
-                $password = $passwordEncoder->encodePassword($user, $user->getPassword());dump($user->getPassword());
+                $password = $passwordEncoder->encodePassword($user, $user->getPassword());
                 $user->setPassword($password);
-
+                $user->setRoles(["ROLE_USER","ROLE_ADMIN"]);
                 $user->setCreated(new \DateTime());
                 $em->persist($user);
                 $em->flush();
@@ -65,12 +66,17 @@ class ConnectionController extends AbstractController
         ]);
 	}
     /**
-     * @Route("/liste_users", name="listeusers")
+     * @Route("/liste_users/{field}_{order}", name="listeusers", defaults={"field": null, "order": null})
+     * @Security("is_granted('ROLE_ADMIN')")
      */
-    public function listUsers(){
+    public function listUsers(Request $request,$field,$order){
         $em = $this->getDoctrine()->getManager();
 
-        $allusers = $em->getRepository(User::class)->findAll();
+        $session = $request->getSession();
+        $session->set("nav","ft");
+
+        if($field != null && $order != null)$allusers = $em->getRepository(User::class)->findBy([],[$field=>$order]);
+        else $allusers = $em->getRepository(User::class)->findAll();
         return $this->render('connection/listusers.html.twig', [
             "allusers" => $allusers
         ]);
@@ -79,8 +85,11 @@ class ConnectionController extends AbstractController
     /**
      * @Route("/liste/user/{id}" ,name="oneuser")
      */
-    public function oneUser(User $user){
+    public function oneUser(User $user,Request $request){
         $em = $this->getDoctrine()->getManager();
+
+        $session = $request->getSession();
+        $session->set("nav","ft");
 
         return $this->render('connection/oneuser.html.twig', [
             "user" => $user

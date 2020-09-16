@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div id="messageservice">
+<div class="container pb-2" >
+    <h2 class="text-center">{{ ticket.title }}</h2>
+    <div class="row justify-content-center">
+        <div class="col-12 mt-1 text-center">
+            {{ ticket.author.lastname }} {{ ticket.author.firstname }}
+        </div>
+        <div class="col-12 mt-1">
+            <span class="font-weight-bold">Service(s) : </span>
+            {% for one in ticket.services %}
+                {{ one.name }} ,
+            {% endfor %}
+        </div>
+        <div class="col-12 mt-2">
+            {{ ticket.description }}
+        </div>
+        <div class="col-12 mt-2 text-right">
+            {{ ticket.created|date('d/m/Y') }}
+        </div>
+        <div class="col-12 mt-5">
+            <form method="post" action="{{ path('messagetoticket',{'id':ticket.id}) }}">
+                <div class="form-group">
+                    <textarea class="form-control" id="content" name="content" rows="2" placeholder="message"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block btn-sm">Envoyer</button>
+            </form>
+        </div>
+        <div class="col-12 mt-4">
+            {% for one in ticket.messages|reverse %}
+                <div class="mb-3">
+                    <div class="font-weight-bold">{{ one.author.lastname }} {{ one.author.firstname }}</div>
+                    <div>{{ one.content }}</div>
+                    <small>{{ one.created|date('d/m/Y') }}</small>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

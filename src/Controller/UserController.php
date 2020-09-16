@@ -7,6 +7,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\User;
 use App\Form\CreateType;
+use App\Form\ModifuserType;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
@@ -22,6 +23,10 @@ class UserController extends AbstractController
     public function index(Request $request,UserPasswordEncoderInterface $passwordEncoder)
     {
         $em = $this->getDoctrine()->getManager();
+
+        if(!$this->getUser() || !in_array("ROLE_ADMIN", $this->getUser()->getRoles()) ){
+            return $this->redirectToRoute('hom');
+        }
 
         $session = $request->getSession();
         $session->set("nav","ft");
@@ -61,6 +66,9 @@ class UserController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
 
+        //if(!$this->getUser() || !$this->getUser()->getCustomer() || !in_array("ROLE_CUSTOMER_ADMIN", $this->getUser()->getRoles()) )return $this->redirectToRoute('hom');
+        
+
         $user = new User();
         $form = $this->createForm(CreateType::class, $user, ['type_register' => 'sub_account']);
         $form->handleRequest($request);
@@ -76,6 +84,33 @@ class UserController extends AbstractController
             $em->flush(); 
             //$this->addFlash('success', 'Le compte utilisateur a bien été créé !');
             return $this->redirectToRoute('hom');
+        }
+ 
+        return $this->render('user/souscompte.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/modifier_user/{id}",name="modifuser")
+     */
+    public function modifierOneUser(User $user,Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        //if(!$this->getUser() || !$this->getUser()->getCustomer() || !in_array("ROLE_CUSTOMER_ADMIN", $this->getUser()->getRoles()) )return $this->redirectToRoute('hom');
+
+        if($user->getCustomer() != null)$form = $this->createForm(ModifuserType::class, $user,['type_register' => 'sub_account']);
+        else $form = $this->createForm(ModifuserType::class, $user);
+        $form->handleRequest($request);
+        
+        // prise en compte du formulaire
+        if($form->isSubmitted() && $form->isValid()) {
+   
+            $em->persist($user); 
+            $em->flush(); 
+            $this->addFlash('success', 'Le compte utilisateur a bien été édité!');
+            //return $this->redirectToRoute('hom');
         }
  
         return $this->render('user/souscompte.html.twig', [

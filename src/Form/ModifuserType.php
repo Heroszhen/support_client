@@ -9,13 +9,12 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Validator\Constraints\Email;
-use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
-class CreateType extends AbstractType
+class ModifuserType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -59,20 +58,6 @@ class CreateType extends AbstractType
                 ],
                 'required'=>false
             ])
-            ->add('password',PasswordType::class,[
-                'label'=>"Mot de passe",
-                'attr' => ['placeholder' => "mot de passe"],
-                'constraints'=> [
-                    new NotBlank(['message'=> 'Le mot de passe est obligatoire']),
-                    new Length([
-                        'min'=>8,
-                        'max'=>20,
-                        'minMessage'=>'Le mot de passe doit contenir au moins {{ limit }} caractères',
-                        'maxMessage'=>'Le mot de passe doit contenir au plus {{ limit }} caractères'
-                    ])
-                ],
-                'required'=>false
-            ])
             ->add('roles', ChoiceType::class, [
                 'multiple' => true, 
                 'expanded' => true, 
@@ -90,7 +75,6 @@ class CreateType extends AbstractType
         $resolver->setDefaults([
             'data_class' => User::class,
             'type_register' => 'account'
-
         ]);
     }
 }

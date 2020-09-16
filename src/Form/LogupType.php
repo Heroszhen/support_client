@@ -3,16 +3,19 @@
 namespace App\Form;
 
 use App\Entity\User;
+use App\Entity\Service;
+use App\Repository\ServiceRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Validator\Constraints\Email;
-use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 
 class LogupType extends AbstractType
 {
@@ -57,6 +60,14 @@ class LogupType extends AbstractType
                     ])
                 ],
                 'required'=>false
+            ])
+            ->add('service', EntityType::class, [
+                'class' => Service::class,
+                'query_builder' => function (ServiceRepository $er) {
+                    return $er->createQueryBuilder('u')
+                        ->orderBy('u.name', 'ASC');
+                },
+                'choice_label' => 'name',
             ])
         ;
     }

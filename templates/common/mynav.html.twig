@@ -24,13 +24,29 @@
       {% if app.user != null %}
       <li class="nav-item dropdown {% if app.session.get("nav")=='ft' %}active{% endif %}">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Dropdown
+          Fonctionnalités
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="{{ path('createuser') }}">Créer un user</a>
-          <a class="dropdown-item" href="{{ path('createcustomer') }}">Créer un client</a>
-          <a class="dropdown-item" href="{{ path('createsouscompte') }}">Créer un sous-compte</a>
+          {% if 'ROLE_ADMIN' in app.user.roles %}
+            <a class="dropdown-item" href="{{ path('listeusers') }}">Tous les users</a>
+            <a class="dropdown-item" href="{{ path('createuser') }}">Créer un user</a>
+            <a class="dropdown-item" href="{{ path('createcustomer') }}">Créer un client</a>
+             <a class="dropdown-item" href="{{ path('allservices') }}">Tous les services</a>
+            <a class="dropdown-item" href="{{ path('createservice') }}">Créer un service</a>
+            <a class="dropdown-item" href="{{ path('adminalltickets') }}">Tous les tickets</a>
+          {% endif %}
+          {% if is_granted('ROLE_CUSTOMER_ADMIN') %}
+          <a class="dropdown-item" href="{{ path('listmysubregisters') }}">Tous les sous-comptes</a>
+            <a class="dropdown-item" href="{{ path('createsouscompte') }}">Créer un sous-compte</a>
+          {% endif %}
+          {% if is_granted('ROLE_CUSTOMER') or is_granted('ROLE_CUSTOMER_ADMIN') %}
+           <a class="dropdown-item" href="{{ path('alltickets') }}">Tous les tickets</a>
+            <a class="dropdown-item" href="{{ path('createticket') }}">Créer un ticket</a>
+          {% endif %}
         </div>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link">Bonjour {{ app.user.firstname }}</a>
       </li>
       {% endif %}
     </ul>

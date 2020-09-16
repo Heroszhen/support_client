@@ -55,13 +55,19 @@ class Customer
     private $created;
 
     /**
-     * @ORM\OneToMany(targetEntity=User::class, mappedBy="customer")
+     * @ORM\OneToMany(targetEntity=User::class, mappedBy="customer", cascade={"persist"})
      */
     private $users;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Ticket::class, mappedBy="customer")
+     */
+    private $tickets;
 
     public function __construct()
     {
         $this->users = new ArrayCollection();
+        $this->tickets = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -178,6 +184,37 @@ class Customer
             // set the owning side to null (unless already changed)
             if ($user->getCustomer() === $this) {
                 $user->setCustomer(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Ticket[]
+     */
+    public function getTickets(): Collection
+    {
+        return $this->tickets;
+    }
+
+    public function addTicket(Ticket $ticket): self
+    {
+        if (!$this->tickets->contains($ticket)) {
+            $this->tickets[] = $ticket;
+            $ticket->setCustomer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTicket(Ticket $ticket): self
+    {
+        if ($this->tickets->contains($ticket)) {
+            $this->tickets->removeElement($ticket);
+            // set the owning side to null (unless already changed)
+            if ($ticket->getCustomer() === $this) {
+                $ticket->setCustomer(null);
             }
         }
 
