@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+{% block title %}Liste{% endblock %}
+{% block body %}
+
+<div id="listusers">
+<div class="container pb-2" >
+    <h2 class="text-center mt-2 mb-4">Tous mes sous-comptes</h2>
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Nom</th>
+                <th scope="col">Siret</th>
+                <th scope="col">Addresse</th>
+                <th scope="col">Ville</th>
+                <th scope="col">Code postal</th>
+                <th scope="col">Date de création</th>
+                <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for one in allclients %}
+                <tr>
+                    <th scope="row">
+                        {{ one.id }}
+                    </th>
+                    <td>{{ one.name }}</td>
+                    <td>{{ one.siret }}</td>
+                    <td>{{ one.address1 }}</td>
+                    <td>{{ one.city }}</td>
+                    <td>{{ one.zipcode }}</td>
+                    <td>{{ one.created|date("m/d/Y h:i:s")  }}</td>
+                    <td>
+                        <a href="{{ path('createcustomer',{'id':one.id}) }}" class="btn btn-info btn-sm mb-1">Modifier</a>
+                        <br>
+                        <a href="" class="btn btn-danger btn-sm">Supprimer</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

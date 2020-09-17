@@ -30,6 +30,7 @@
           {% if 'ROLE_ADMIN' in app.user.roles %}
             <a class="dropdown-item" href="{{ path('listeusers') }}">Tous les users</a>
             <a class="dropdown-item" href="{{ path('createuser') }}">Créer un user</a>
+            <a class="dropdown-item" href="{{ path('listclients') }}">Tous les clients</a>
             <a class="dropdown-item" href="{{ path('createcustomer') }}">Créer un client</a>
              <a class="dropdown-item" href="{{ path('allservices') }}">Tous les services</a>
             <a class="dropdown-item" href="{{ path('createservice') }}">Créer un service</a>

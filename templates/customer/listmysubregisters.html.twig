@@ -42,6 +42,9 @@
                 <tr>
                     <th scope="row">
                         <a href="{{ path('oneuser',{'id':user.id}) }}">{{ user.id }}</a>
+                        {% if user.id == app.user.id %}
+                            (moi)
+                        {% endif %}
                     </th>
                     <td>{{ user.lastname }}</td>
                     <td>{{ user.firstname }}</td>

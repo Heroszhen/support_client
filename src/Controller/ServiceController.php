@@ -44,7 +44,7 @@ class ServiceController extends AbstractController
                 $em->persist($service);
                 $em->flush();
 
-                $message = "Un service a été créé avec succès";
+                $message = "Un service a été édité avec succès";
                 $this->addFlash('success', $message);
 
                 if($id == null)$service = new Service();
@@ -94,11 +94,14 @@ class ServiceController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted()) {
             if($form->isValid()){
-                $support = $em->find(Service::class,1);
-                $ticket->addService($support);
-                $ticket->setAuthor($this->getUser());
-                $ticket->setCustomer($this->getUser()->getCustomer());
-                $ticket->setCreated(new \DateTime());
+                if($id == null){
+                    $support = $em->find(Service::class,1);
+                    $ticket->addService($support);
+                    $ticket->setAuthor($this->getUser());
+                    $ticket->setCustomer($this->getUser()->getCustomer());
+                    $ticket->setCreated(new \DateTime());
+                }
+                
                 $em->persist($ticket);
                 $em->flush();
 
@@ -151,10 +154,10 @@ class ServiceController extends AbstractController
 
         $alltickets = $em->getRepository(Ticket::class)->findAll();
         $allservices = $em->getRepository(Service::class)->findBy([],["name"=>"asc"]);
-        
+        /*
         $ts = $em->getRepository(Ticket::class)->findByService($this->getUser()->getService());
         $ts2 = $em->getRepository(Ticket::class)->findByNotService($this->getUser()->getService());
-        dump($ts,$ts2);
+        dump($ts,$ts2);*/
         return $this->render('service/adminlisttickets.html.twig', [
             "list" => $alltickets,
             "allservices" => $allservices

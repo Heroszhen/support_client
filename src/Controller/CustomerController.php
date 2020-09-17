@@ -19,9 +19,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 class CustomerController extends AbstractController
 {
     /**
-     * @Route("/creer_client", name="createcustomer")
+     * id of customer or null
+     * @Route("/creer_client/{id}", name="createcustomer",defaults={"id":null})
      */
-    public function index(Request $request , UserPasswordEncoderInterface $encoder)
+    public function index($id,Request $request , UserPasswordEncoderInterface $encoder)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -32,18 +33,24 @@ class CustomerController extends AbstractController
         $session = $request->getSession();
         $session->set("nav","ft");
 
-        $user = new User();
-        $customer = new Customer();
+        if($id == null){
+            $user = new User();
+            $customer = new Customer();
+        }else{
+            $customer = $em->find(Customer::class,$id);
+            $user = $customer->getUsers()[0];
+        }
         $form = $this->createForm(CustomerWithUserType::class, ['customer' => $customer, 'user' => $user]);
- 
         $form->handleRequest($request);
         
         // prise en compte du formulaire
         if($form->isSubmitted() && $form->isValid()) {
- 
-            $user->setPassword($encoder->encodePassword($user,"aaaaaaaa"));
-            $user->setRoles(['ROLE_USER','ROLE_CUSTOMER_ADMIN', 'ROLE_CUSTOMER']);
-            $user->setCreated(new \DateTime());
+            if($id == null){
+                $user->setPassword($encoder->encodePassword($user,"aaaaaaaa"));
+                $user->setRoles(['ROLE_USER','ROLE_CUSTOMER_ADMIN', 'ROLE_CUSTOMER']);
+                $user->setCreated(new \DateTime());
+            }
+            
             $em->persist($user); 
             $em->flush(); 
 
@@ -52,8 +59,17 @@ class CustomerController extends AbstractController
  
             $em->persist($customer); 
             $em->flush(); 
-            //$this->addFlash('success', 'Le compte client a bien été créé !');
-            return $this->redirectToRoute('hom');
+
+            if($id == null){
+                $user = new User();
+                $customer = new Customer();
+            }else{
+                $customer = $em->find(Customer::class,$id);
+                $user = $customer->getUsers()[0];
+            }
+            $form = $this->createForm(CustomerWithUserType::class, ['customer' => $customer, 'user' => $user]);
+            $this->addFlash('success', 'Le compte client a bien été édité !');
+            //return $this->redirectToRoute('hom');
         }
 
         return $this->render('customer/index.html.twig', [
@@ -75,6 +91,19 @@ class CustomerController extends AbstractController
 
         return $this->render('customer/listmysubregisters.html.twig', [
             "allusers" => $allusers
+        ]);
+    }
+
+     /**
+     * @Route("/liste_clients", name="listclients")
+     * @Security("is_granted('ROLE_ADMIN')")
+     */
+    public function listClients(Request $request){
+        $em = $this->getDoctrine()->getManager();
+
+        $allclients = $em->getRepository(Customer::class)->findAll();
+        return $this->render('customer/listclients.html.twig', [
+            "allclients" => $allclients
         ]);
     }
 }
