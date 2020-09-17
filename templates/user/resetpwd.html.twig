@@ -1,9 +1,10 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-<div id="createticket">
+<div id="resetpwd">
+{% if valid == true %}
 <div class="container pb-2" >
-    <h2 class="text-center">Editer un ticket</h2>
+    <h2 class="text-center mt-5">Modifier votre mot de passe</h2>
     <div class="row justify-content-center">
         <div class="col-md-5 mt-4">
             <div id="registerform">
@@ -19,12 +20,12 @@
                 {% endfor %}
                 {{ form_start(form) }}
                 {{ form_rest(form) }}
-                <div class="text-info showfilename" style="position:relative;top:-10px;"></div>
-                <button type="submit" class="btn btn-primary btn-block">Envoyer</button>
+                <button type="submit" class="btn btn-primary btn-block mt-4">Envoyer</button>
                 {{ form_end(form) }}
             </div>
         </div>
     </div>
 </div>
+{% endif %}
 </div>
 {% endblock %}

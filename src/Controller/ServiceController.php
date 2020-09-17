@@ -90,6 +90,7 @@ class ServiceController extends AbstractController
 
         if($id == null)$ticket = new Ticket();
         else $ticket = $em->find(Ticket::class,$id);
+        $oldfile = $ticket->getFile();
         $form = $this->createForm(TicketType::class,$ticket);
         $form->handleRequest($request);
         if ($form->isSubmitted()) {
@@ -101,7 +102,15 @@ class ServiceController extends AbstractController
                     $ticket->setCustomer($this->getUser()->getCustomer());
                     $ticket->setCreated(new \DateTime());
                 }
-                
+                $file = $ticket->getFile();
+                if (!is_null($file)) {
+                    $newimg = uniqid() . '.' . $file->guessExtension();
+                    $file->move($this->getParameter('upload_dir'), $newimg);
+                    $ticket->setFile($newimg);
+                    if ($oldfile != null) unlink($this->getParameter('upload_dir') .$oldfile);
+                } else {
+                    $ticket->setFile($oldfile);
+                }
                 $em->persist($ticket);
                 $em->flush();
 
@@ -213,4 +222,24 @@ class ServiceController extends AbstractController
             "form" => $form->createView()
         ]);
     }
+
+
+    /**
+     * @Route("/moteur_recherche", name="moteurrecherche")
+     * 
+     */
+    public function moteurrecherche(Request $request){
+        $em = $this->getDoctrine()->getManager();
+
+        $recherche = $request->request->get("recherche");
+        $results = [];
+        if($recherche != null){
+            $results = $em->getRepository(Ticket::class)->moteur($recherche);
+        }
+        return $this->render('service/moteurrecherche.html.twig', [
+            "recherche" => $recherche,
+            "list" => $results
+        ]);
+    }
+
 }

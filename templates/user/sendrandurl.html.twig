@@ -1,9 +1,10 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-<div id="createticket">
+<div id="senturl">
+
 <div class="container pb-2" >
-    <h2 class="text-center">Editer un ticket</h2>
+    <h2 class="text-center mt-5">Modifier votre mot de passe</h2>
     <div class="row justify-content-center">
         <div class="col-md-5 mt-4">
             <div id="registerform">
@@ -17,14 +18,17 @@
                         {{ message }}
                     </div>
                 {% endfor %}
-                {{ form_start(form) }}
-                {{ form_rest(form) }}
-                <div class="text-info showfilename" style="position:relative;top:-10px;"></div>
-                <button type="submit" class="btn btn-primary btn-block">Envoyer</button>
-                {{ form_end(form) }}
+                <form action="{{ path('sendrandurl') }}" method="post">
+                <div class="form-group">
+                    <label for="email">Votre email</label>
+                    <input type="email" class="form-control" id="email" name="email">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block mt-4">Envoyer</button>
+                <form>
             </div>
         </div>
     </div>
 </div>
+
 </div>
 {% endblock %}

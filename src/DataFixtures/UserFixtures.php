@@ -12,8 +12,9 @@ use App\Entity\Service;
 use App\Entity\Customer;
 use App\DataFixtures\ServiceFixtures;
 use App\DataFixtures\CustomerFixtures;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
-class UserFixtures extends Fixture
+class UserFixtures extends Fixture implements DependentFixtureInterface
 {
     private $encoder;
     public function __construct(UserPasswordEncoderInterface $encoder){

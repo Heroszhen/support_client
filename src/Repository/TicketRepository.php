@@ -48,6 +48,22 @@ class TicketRepository extends ServiceEntityRepository
         return $query->getResult();
     }
 
+    public function moteur($keyword){
+        $qb = $this->createQueryBuilder('t');
+        $qb
+            ->innerJoin('t.services', 's')
+            ->where('t.title LIKE :keyword')
+            ->setParameter('keyword', '%'.$keyword.'%')
+            ->orWhere('t.description LIKE :keyword')
+            ->setParameter('keyword', '%'.$keyword.'%')
+            ->leftJoin('t.messages', 'm')
+            ->orWhere('m.content LIKE :keyword')
+            ->setParameter('keyword', '%'.$keyword.'%')
+        ;
+        $query = $qb->getQuery();
+        return $query->getResult();
+    }
+
 
     // /**
     //  * @return Ticket[] Returns an array of Ticket objects

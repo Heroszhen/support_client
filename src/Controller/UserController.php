@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Entity\User;
 use App\Form\CreateType;
 use App\Form\ModifuserType;
+use App\Form\PasswordType;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
@@ -115,6 +116,69 @@ class UserController extends AbstractController
  
         return $this->render('user/souscompte.html.twig', [
             'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/send_url",name="sendrandurl")
+     */
+    public function sendRandurl(Request $request){
+        $em = $this->getDoctrine()->getManager();
+
+        $email = $request->request->get("email");
+        if($email != null){
+            $user = $em->getRepository(User::class)->findOneBy(["email"=>$email]);
+            if(empty((array)$user) || $email == ""){
+                $message = "Erreur";
+                $this->addFlash('danger', $message);
+            }else{
+                $user->setRandurl("aaa");
+                $em->persist($user);
+                $em->flush();
+                $message = "Nous avons envoyé un lien dans votre boîte de mail";
+                $this->addFlash('success', $message);
+            }
+        }
+
+        return $this->render('user/sendrandurl.html.twig', [
+            
+        ]);
+    }
+
+    /**
+     * @Route("/modifier_motdepasse/{url}",name="modifpwd")
+     */
+    public function modifyPassword(string $url, Request $request ,UserPasswordEncoderInterface $passwordEncoder){
+        $em = $this->getDoctrine()->getManager();
+
+        $session = $request->getSession();
+        $session->set("nav"," ");
+
+        $valid = false;
+        $user = $em->getRepository(User::class)->findOneBy(["randurl"=>$url]);
+        if($user == null)$user = new User();
+        else $valid = true;
+        $form = $this->createForm(PasswordType::class, $user);
+        if($valid == true){
+            $valid = true;
+            $form->handleRequest($request);
+            if($form->isSubmitted()) {
+                if($form->isValid()){
+                    $password = $passwordEncoder->encodePassword($user, $user->getPassword());
+                    $user->setPassword($password);
+                    $user->setRandurl(null);
+                    $user->setRandcode(null);
+                    $em->persist($user);
+                    $em->flush();
+                    $message = "Votre nouveau mot de passe a été enregistré avec succès";
+                    $this->addFlash('success', $message);
+                }
+            }
+        }
+
+        return $this->render('user/resetpwd.html.twig', [
+            "valid" => $valid,
+            "form" => $form->createView()
         ]);
     }
 

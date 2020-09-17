@@ -11,8 +11,9 @@ use App\Entity\Ticket;
 use App\Entity\Message;
 use App\DataFixtures\TicketFixtures;
 use App\DataFixtures\UserFixtures;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
-class MessageFixtures extends Fixture
+class MessageFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager)
     {
@@ -26,10 +27,21 @@ class MessageFixtures extends Fixture
 
         $faker = Faker\Factory::create('fr_FR');
         for ($i = 1; $i <= 10; $i++) {
+            $user = null;
+            $ticket = null;
+            while(true){
+                $user = $users[array_rand($users)];
+                if(in_array("ROLE_ADMIN", $user->getRoles())){
+                    if($user->getService()->getTickets()->count() > 0){
+                        $ticket = $user->getService()->getTickets()[0];
+                        break;
+                    }
+                }
+            }
             $message = new Message();
             $message
-                ->setAuthor($users[array_rand($users)])
-                ->setTicket($tickets[array_rand($tickets)])
+                ->setAuthor($user)
+                ->setTicket($ticket)
                 ->setContent($faker->text($maxNbChars = 30))
                 ->setCreated(new \DateTime());
             $manager->persist($message);
@@ -42,7 +54,7 @@ class MessageFixtures extends Fixture
     {
         return array(
             TicketFixtures::class,
-            UserFixtures::class,
+            UserFixtures::class
         );
     }
 }

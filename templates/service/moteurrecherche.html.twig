@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Recherche{% endblock %}
+
+{% block body %}
+<div id="moteur">
+<div class="container pb-2" >
+    <div class="row justify-content-center">
+        <div class="col-12 mt-4">
+            <div>
+                Mot clé : {{ recherche }}
+                <br>
+                {{ list|length }} ticket(s) ont été trouvés
+            </div>
+            <div class="mt-3">
+                <table class="table">
+                <thead class="thead-dark">
+                    <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">Titre</th>
+                    <th scope="col">Auteur</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Priorité</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Services</th>
+                    <th scope="col">Date de création</th>
+                    <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for one in list %}
+                        <tr>
+                            <th scope="row">
+                                {{ one.id }}
+                            </th>
+                            <td>{{ one.title  }}</td>
+                            <td>{{ one.author.lastname  }} {{ one.author.firstname  }}</td>
+                            <td>{{ one.description  }}</td>
+                            <td>
+                                {{ one.priority  }}
+                            </td>
+                            <td>
+                                {{ one.status }}
+                            </td>
+                            <td>
+                                {% for one2 in one.services %}
+                                    {{ one2.name }} , 
+                                {% endfor %}
+                            </td>
+                            <td>{{ one.created|date("m/d/Y h:i:s")  }}</td>
+                            <td>
+                                {% if is_granted('ROLE_ADMIN') %}
+                                <a href="{{ path('messagetoticket',{'id':one.id}) }}" class="btn btn-warning btn-sm mb-1">Message</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                {% endfor %}
+                </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

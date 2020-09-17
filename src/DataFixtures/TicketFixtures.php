@@ -13,8 +13,9 @@ use App\Entity\Customer;
 use App\DataFixtures\ServiceFixtures;
 use App\DataFixtures\UserFixtures;
 use App\DataFixtures\CustomerFixtures;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
-class TicketFixtures extends Fixture
+class TicketFixtures extends Fixture implements DependentFixtureInterface 
 {
     public function load(ObjectManager $manager)
     {
@@ -54,6 +55,7 @@ class TicketFixtures extends Fixture
     public function getDependencies()
     {
         return array(
+            UserFixtures::class,
             ServiceFixtures::class,
             CustomerFixtures::class,
         );

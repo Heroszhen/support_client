@@ -31,7 +31,7 @@
                 <div class="mb-3">
                     <div class="font-weight-bold">{{ one.author.lastname }} {{ one.author.firstname }}</div>
                     <div>{{ one.content }}</div>
-                    <small>{{ one.created|date('d/m/Y') }}</small>
+                    <small>{{ one.created|date('d/m/Y h:i:s') }}</small>
                 </div>
             {% endfor %}
         </div>

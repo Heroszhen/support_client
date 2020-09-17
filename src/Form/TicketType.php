@@ -11,6 +11,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 class TicketType extends AbstractType
 {
@@ -42,6 +43,15 @@ class TicketType extends AbstractType
                 'constraints' => [
                     new NotBlank(["message"=>"Veuillez mettre une description"])
                 ],
+                'required'=>false
+            ])
+            ->add('file',FileType::class,[
+                'label'=>" ",
+                'attr' => [
+                    'placeholder' => " ",
+                    "class" => "thefile"
+                ],
+                "data_class" => null,
                 'required'=>false
             ])
         ;

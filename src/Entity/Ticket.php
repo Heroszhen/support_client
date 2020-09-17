@@ -64,6 +64,11 @@ class Ticket
      */
     private $status = 0;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $file;
+
     public function __construct()
     {
         $this->services = new ArrayCollection();
@@ -213,6 +218,18 @@ class Ticket
     public function setStatus(?string $status): self
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getFile()
+    {
+        return $this->file;
+    }
+
+    public function setFile($file)
+    {
+        $this->file = $file;
 
         return $this;
     }

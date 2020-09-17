@@ -71,6 +71,16 @@ class User implements UserInterface
      */
     private $messages;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $randurl;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $randcode;
+
     public function __construct()
     {
         $this->tickets = new ArrayCollection();
@@ -273,6 +283,30 @@ class User implements UserInterface
                 $message->setAuthor(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getRandurl(): ?string
+    {
+        return $this->randurl;
+    }
+
+    public function setRandurl(?string $randurl): self
+    {
+        $this->randurl = $randurl;
+
+        return $this;
+    }
+
+    public function getRandcode(): ?string
+    {
+        return $this->randcode;
+    }
+
+    public function setRandcode(?string $randcode): self
+    {
+        $this->randcode = $randcode;
 
         return $this;
     }
