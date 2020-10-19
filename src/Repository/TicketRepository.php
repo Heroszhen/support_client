@@ -56,6 +56,8 @@ class TicketRepository extends ServiceEntityRepository
             ->setParameter('keyword', '%'.$keyword.'%')
             ->orWhere('t.description LIKE :keyword')
             ->setParameter('keyword', '%'.$keyword.'%')
+            ->orWhere('s.name LIKE :keyword')
+            ->setParameter('keyword', '%'.$keyword.'%')
             ->leftJoin('t.messages', 'm')
             ->orWhere('m.content LIKE :keyword')
             ->setParameter('keyword', '%'.$keyword.'%')

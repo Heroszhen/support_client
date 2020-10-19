@@ -69,6 +69,12 @@ class Ticket
      */
     private $file;
 
+    /**
+     * @ORM\Column(type="array", nullable=true)
+     */
+    private $files = [];
+
+
     public function __construct()
     {
         $this->services = new ArrayCollection();
@@ -233,4 +239,17 @@ class Ticket
 
         return $this;
     }
+
+    public function getFiles(): ?array
+    {
+        return $this->files;
+    }
+
+    public function setFiles(?array $files): self
+    {
+        $this->files = $files;
+
+        return $this;
+    }
+
 }

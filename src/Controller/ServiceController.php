@@ -102,6 +102,7 @@ class ServiceController extends AbstractController
                     $ticket->setCustomer($this->getUser()->getCustomer());
                     $ticket->setCreated(new \DateTime());
                 }
+                /*
                 $file = $ticket->getFile();
                 if (!is_null($file)) {
                     $newimg = uniqid() . '.' . $file->guessExtension();
@@ -110,7 +111,9 @@ class ServiceController extends AbstractController
                     if ($oldfile != null) unlink($this->getParameter('upload_dir') .$oldfile);
                 } else {
                     $ticket->setFile($oldfile);
-                }
+                }*/
+                dump(count($form->get('files')->getData()));
+                /*
                 $em->persist($ticket);
                 $em->flush();
 
@@ -120,7 +123,7 @@ class ServiceController extends AbstractController
                 if($id == null)$ticket = new Ticket();
                 else $ticket = $em->find(Ticket::class,$id);
                 $form = $this->createForm(TicketType::class,$ticket);
-
+*/
             }else{
                 $message = "Erreurs";
                 $this->addFlash('danger', $message);

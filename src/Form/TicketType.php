@@ -45,11 +45,14 @@ class TicketType extends AbstractType
                 ],
                 'required'=>false
             ])
-            ->add('file',FileType::class,[
+            ->add('files',FileType::class,[
+                "multiple" => true,
+                "mapped" => false,
                 'label'=>" ",
                 'attr' => [
                     'placeholder' => " ",
-                    "class" => "thefile"
+                    "class" => "thefile",
+                    "multiple" => "multiple"
                 ],
                 "data_class" => null,
                 'required'=>false
